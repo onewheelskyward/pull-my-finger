@@ -1,0 +1,30 @@
+{
+  "name": "pull-my-finger",
+  "version": "0.0.0",
+  "description": "A simple api for pulling your repo's pull requests metadata and returning them to Slack.",
+  "main": "app.js",
+  "dependencies": {
+    "basic-auth": "^1.0.4",
+    "express": "^4.14.0",
+    "superagent": "^2.0.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/onewheelskyward/pull-my-finger.git"
+  },
+  "keywords": [
+    "git",
+    "pull",
+    "request"
+  ],
+  "author": "Andrew Kreps",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/onewheelskyward/pull-my-finger/issues"
+  },
+  "homepage": "https://github.com/onewheelskyward/pull-my-finger#readme"
+}
