@@ -1,0 +1,7 @@
+{
+  "repoOwner": "you",
+  "username": "valid github user",
+  "password": "generate a github personal access token",
+  "repos": ["list", "of", "repos", "to", "check"],
+  "tokens": ["slack", "tokens"]
+}
