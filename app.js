@@ -1,7 +1,8 @@
 var express = require('express');
 var superagent = require('superagent');
-var app = express();
 var config = require('./config.json');
+var app = express();
+app.set('port', 22003);
 
 var responses = [];
 
