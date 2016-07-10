@@ -13,14 +13,14 @@ app.listen(app.get('port'), function () {
 
 var responses = [];
 
-function makeCall(repos) {
+function makeCall(res) {
     var resp = [];
 
-    repos.forEach(iterateApiCalls);
-    return resp;
+    var done1 = Promise.all(config.repos.map(callApi));
+    done1.then(res.send(responses.join("\n")));
 }
 
-function iterateApiCalls(repo) {
+function callApi(repo) {
     var auth = "Basic " + new Buffer(config.username + ":" + config.password).toString("base64");
     var uri = 'https://api.github.com/repos/' + config.repoOwner + '/' + repo + '/pulls';
     console.log("Calling URI: " + uri);
@@ -33,20 +33,20 @@ function iterateApiCalls(repo) {
 function dealWithResponse(err, apiResponse) {
     console.log("Response status: " + apiResponse.status);
     if (apiResponse.status == 200) {
-        apiResponse.body.forEach(formatMessage);
+        apiResponse.body.map(formatMessage);
     }
 }
 
 function formatMessage(pull) {
     var str_format = pull.head.repo.name + ': ' + pull.number + ' - ' + pull.title + '\n' + pull.url;
     console.log(str_format);
-    return str_format;
+    responses.push(str_format);
 }
 
 app.get('/pulls', function (req, res) {
     console.log(req.params.token);
 
-    var r = makeCall(config.repos);
+    var r = makeCall(res);
         // .then(function() {
         // res.send(responses.join("\n"));
     // });
