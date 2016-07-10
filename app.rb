@@ -2,6 +2,7 @@ require 'sinatra/base'
 require 'sinatra/config_file'
 require 'rest-client'
 require 'base64'
+require 'json'
 
 class App < Sinatra::Base
   register Sinatra::ConfigFile
@@ -20,7 +21,7 @@ class App < Sinatra::Base
   end
 
   get '/pulls*' do
-    # halt 400, '{"message": "Auth failed."}' unless check_auth(params)
+    halt 400, '{"message": "Auth failed."}' unless check_auth(params)
     responses = []
     puts params[:response_url]
     auth = 'Basic ' + Base64.encode64(settings.username + ':' + settings.password)
