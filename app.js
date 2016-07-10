@@ -3,6 +3,11 @@ var superagent = require('superagent');
 var config = require('./config.json');
 var app = express();
 app.set('port', 22003);
+app.listen();
+
+app.listen(app.get('port'), function () {
+    console.log('Server started: http://localhost:' + app.get('port') + '/');
+});
 
 var responses = [];
 
@@ -39,7 +44,3 @@ function makeCall(repos, callback) {
     });
     return responses;
 }
-
-app.listen(3000, function () {
-    console.log('Example app listening on port 3000!');
-});
