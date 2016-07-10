@@ -1,6 +1,6 @@
 var express = require('express');
 var superagent = require('superagent');
-var Promise = require("bluebird");
+var waterfall = require('async-waterfall');
 var config = require('./config.json');
 
 var app = express();
@@ -16,15 +16,16 @@ var responses = [];
 function makeCall(res) {
     var resp = [];
 
-    var done1 = Promise.all(config.repos.map(callApi));
-    done1.then(res.send(responses.join("\n")));
+    waterfall([
+        config.repos.map(callApi)
+    ]);
 }
 
 function callApi(repo) {
     var auth = "Basic " + new Buffer(config.username + ":" + config.password).toString("base64");
     var uri = 'https://api.github.com/repos/' + config.repoOwner + '/' + repo + '/pulls';
     console.log("Calling URI: " + uri);
-    superagent
+    return superagent
         .get(uri)
         .set('Authorization', auth)
         .end(dealWithResponse);
@@ -33,7 +34,7 @@ function callApi(repo) {
 function dealWithResponse(err, apiResponse) {
     console.log("Response status: " + apiResponse.status);
     if (apiResponse.status == 200) {
-        apiResponse.body.map(formatMessage);
+        return apiResponse.body.map(formatMessage);
     }
 }
 
@@ -41,6 +42,7 @@ function formatMessage(pull) {
     var str_format = pull.head.repo.name + ': ' + pull.number + ' - ' + pull.title + '\n' + pull.url;
     console.log(str_format);
     responses.push(str_format);
+    return str_format;
 }
 
 app.get('/pulls', function (req, res) {
@@ -50,4 +52,5 @@ app.get('/pulls', function (req, res) {
         // .then(function() {
         // res.send(responses.join("\n"));
     // });
+    console.log(r);
 });

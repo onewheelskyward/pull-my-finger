@@ -4,6 +4,7 @@
   "description": "A simple api for pulling your repo's pull requests metadata and returning them to Slack.",
   "main": "app.js",
   "dependencies": {
+    "async-waterfall": "^0.1.5",
     "bluebird": "^3.4.1",
     "express": "^4.14.0",
     "superagent": "^2.0.0"
