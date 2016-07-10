@@ -24,7 +24,6 @@ class App < Sinatra::Base
     halt 400, '{"message": "Auth failed."}' unless check_auth(params)
     responses = []
     puts params[:response_url]
-    auth = 'Basic ' + Base64.encode64(settings.username + ':' + settings.password)
 
     settings.repos.each do |repo|
       uri = 'https://api.github.com/repos/' + settings.repo_owner + '/' + repo + '/pulls';
@@ -40,7 +39,7 @@ class App < Sinatra::Base
       result = JSON.parse(response)
       # var str_format = pull.head.repo.name + ': ' + pull.number + ' - ' + pull.title + '\n' + pull.url;
       result.each do |pull|
-        str_format = "#{pull['head']['repo']['name']}: #{pull['number']} - #{pull['title']}\n#{pull['url']}"
+        str_format = "#{pull['head']['repo']['name']}: #{pull['number']} - #{pull['title']}\n#{pull['html_url']}"
         responses.push str_format
       end
     end
