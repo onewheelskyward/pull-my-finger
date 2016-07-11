@@ -39,7 +39,18 @@ class App < Sinatra::Base
       result = JSON.parse(response)
       # var str_format = pull.head.repo.name + ': ' + pull.number + ' - ' + pull.title + '\n' + pull.url;
       result.each do |pull|
+        response = RestClient::Request.new(
+            :method => :get,
+            :url => 'https://api.github.com/repos/Lululemon/hubq-backend/issues/' + pull['number'].to_s,
+            :user => settings.username,
+            :password => settings.password,
+        ).execute
+        issue = JSON.parse(response)
+
         str_format = "#{pull['head']['repo']['name']}: #{pull['number']} - #{pull['title']}\n#{pull['html_url']}"
+        issue['labels'].each do |label|
+          str_format += "\n#{label['name']}"
+        end
         responses.push str_format
       end
     end
