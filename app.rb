@@ -47,10 +47,11 @@ class App < Sinatra::Base
         ).execute
         issue = JSON.parse(response)
 
-        str_format = "#{pull['head']['repo']['name']}: #{pull['number']} - #{pull['title']}\n#{pull['html_url']}"
+        str_format = "#{pull['head']['repo']['name']}: #{pull['number']} - #{pull['title']}"
         issue['labels'].each do |label|
-          str_format += "\n#{label['name']}"
+          str_format += " [#{label['name']}]"
         end
+        str_format += "\n#{pull['html_url']}\n"
         responses.push str_format
       end
     end
