@@ -44,8 +44,14 @@ class App < Sinatra::Base
       end
     end
 
+    if responses.empty?
+      reply = ['All caught up.', 'Nothing to see here, move along.', "🎉"].sample
+    else
+      reply = responses.join("\n")
+    end
+
     { response_type: 'in_channel',
-      text: responses.join("\n"),
+      text: reply
     }.to_json
   end
 end

@@ -1,0 +1,10 @@
+repo_owner: repo username
+username: github user
+password: personal access token
+repos:
+  - this
+  - that
+tokens:
+  - x
+team_domains:
+  - x
