@@ -61,8 +61,11 @@ class App < Sinatra::Base
       reply = responses.join("\n")
     end
 
-    { response_type: 'in_channel',
-      text: reply
-    }.to_json
+    slack_reply = { response_type: 'in_channel',
+                    text: reply
+                  }.to_json
+
+    puts "Delayed-replying to #{params[:response_url]}"
+    RestClient.post params[:response_url], slack_reply, :content_type => :json
   end
 end
