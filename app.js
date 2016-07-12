@@ -11,15 +11,12 @@ app.listen(app.get('port'), function () {
     console.log('Server started: http://localhost:' + app.get('port') + '/');
 });
 
-var responses = [];
+app.get('/pulls', function (req, res) {
+    console.log(req.query.token);
+    app.locals.slackUri = req.query.response_url;
 
-function makeCall(res) {
-    var resp = [];
-
-    waterfall([
-        config.repos.map(callApi)
-    ]);
-}
+    config.repos.map(callApi);
+});
 
 function callApi(repo) {
     var auth = "Basic " + new Buffer(config.username + ":" + config.password).toString("base64");
@@ -28,29 +25,23 @@ function callApi(repo) {
     return superagent
         .get(uri)
         .set('Authorization', auth)
-        .end(dealWithResponse);
+        .set('Content-type', 'application/json')
+        // .end(dealWithResponse);
+        .end(function (err, response) {
+            console.log(response);
+        });
 }
 
 function dealWithResponse(err, apiResponse) {
     console.log("Response status: " + apiResponse.status);
     if (apiResponse.status == 200) {
-        return apiResponse.body.map(formatMessage);
+        apiResponse.text.map(formatMessage);
     }
 }
 
 function formatMessage(pull) {
-    var str_format = pull.head.repo.name + ': ' + pull.number + ' - ' + pull.title + '\n' + pull.url;
-    console.log(str_format);
-    responses.push(str_format);
-    return str_format;
+    var reply = pull.head.repo.name + ': ' + pull.number + ' - ' + pull.title + '\n' + pull.url;
+    console.log(reply);
+    superagent.post(app.locals.slackUri)
+        .send({ response_type: 'in_channel', text: reply });
 }
-
-app.get('/pulls', function (req, res) {
-    console.log(req.params.token);
-
-    var r = makeCall(res);
-        // .then(function() {
-        // res.send(responses.join("\n"));
-    // });
-    console.log(r);
-});
